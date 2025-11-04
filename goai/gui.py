@@ -1,4 +1,6 @@
-# GUI: 使用 GameManager，不包含 Pass 功能。若一方无合法着法则结束对局（弹窗提示）。
+"""
+GUI: 使用 GameManager，不包含 Pass 功能。若一方无合法着法则结束对局（弹窗提示）。
+"""
 import tkinter as tk
 from tkinter import messagebox
 import threading
@@ -7,6 +9,7 @@ import time
 from .board import Board, EMPTY, BLACK, WHITE
 from .ai import SimpleAI
 from .game_manager import GameManager
+from .sound import play_move_sound
 
 CELL_SIZE = 30
 MARGIN = 25
@@ -88,10 +91,8 @@ class GoGUI(tk.Frame):
         self.status.config(text=self._status_text())
 
     def on_click(self, event):
-        if self.game.result != self.game.result == self.game.result:  # placeholder no-op, keep structure
-            pass
-        if self.game.result != self.game.ONGOING if False else False:
-            # defensive: if game ended ignore clicks
+        # defensive: if game ended ignore clicks
+        if self.game.result != GameManagerResultSafe.ONGOING:
             return
         x = event.x
         y = event.y
@@ -108,6 +109,11 @@ class GoGUI(tk.Frame):
             if msg:
                 messagebox.showinfo("Move failed", msg)
             return
+        # Play move sound for human move
+        try:
+            play_move_sound(master=self.master)
+        except Exception:
+            pass
         # 更新界面
         self.draw_stones()
         # 检查是否对局结束
@@ -124,8 +130,14 @@ class GoGUI(tk.Frame):
             if self.game.result != GameManagerResultSafe.ONGOING:
                 return
             moved, msg = self.game.make_ai_move()
-            # 更新界面
+            # Update UI on main thread
             self.after(1, self.draw_stones)
+            if moved:
+                # Play move sound for AI move
+                try:
+                    play_move_sound(master=self.master)
+                except Exception:
+                    pass
             if not moved and msg:
                 # AI 无法下法 -> 对局结束（AI 投降）
                 self.after(50, lambda: messagebox.showinfo("Game over", msg))
