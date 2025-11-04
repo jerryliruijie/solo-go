@@ -1,3 +1,4 @@
+# SimpleAI：只在存在合法着法时返回一个 (r, c)；若无合法着法返回 None
 import random
 from .board import Board, EMPTY, BLACK, WHITE
 
@@ -6,9 +7,16 @@ class SimpleAI:
         self.level = level
 
     def select_move(self, board: Board, color):
-        """随机选择一个空位下棋"""
-        empties = [(r, c) for r in range(board.size) for c in range(board.size)
-                   if board.grid[r][c] == EMPTY]
-        if not empties:
+        """
+        返回一个合法落子 (r, c)，若没有合法着法返回 None（表示无法下子）。
+        AI 不会返回“pass”作为着法。
+        """
+        legal_moves = []
+        for r in range(board.size):
+            for c in range(board.size):
+                if board.grid[r][c] == EMPTY and board.is_legal(r, c, color):
+                    legal_moves.append((r, c))
+        if not legal_moves:
             return None
-        return random.choice(empties)
+        # 简单随机策略；未来可按启发式排序
+        return random.choice(legal_moves)
