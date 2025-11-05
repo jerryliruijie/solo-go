@@ -36,12 +36,7 @@
   - 提供可选开关：level=0/1/2，对应随机/启发式/MCTS。
 
 2) 更好的落子音效（“去找一个”）
-- 状态：目前实现了简单 cross-platform 接口和 Windows/Tk 的退化方案，但未加入具体 WAV 音效文件或更好音源。
-- 优先级：中
-- 建议：
-  - 找一个合适的短音效（例如 click.wav 或 stone.wav，CC0 或合适授权），放在项目 `assets/sounds/` 下。
-  - 使用 `simpleaudio` 或 `pygame` 播放 WAV（跨平台、低延迟），在 `goai/sound.py` 中实现并保持 play_move_sound(master=None) 接口向后兼容。
-  - 补充 tests/test_sound.py 用 mock 覆盖库调用。
+- 状态：目前实现了落子音效,但是是开发者模式下 未来需要封装pygame库,只播放固定音效
 
 3) “退出棋局”按钮（而不是只依赖窗口关闭）
 - 状态：未实现（当前只有 Reset）
