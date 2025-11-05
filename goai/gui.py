@@ -9,7 +9,7 @@ import time
 from .board import Board, EMPTY, BLACK, WHITE
 from .ai import SimpleAI
 from .game_manager import GameManager
-from .sound import play_move_sound
+from .sound_dev import play_move_sound
 
 CELL_SIZE = 30
 MARGIN = 25
